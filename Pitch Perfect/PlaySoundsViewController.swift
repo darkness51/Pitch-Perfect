@@ -62,12 +62,13 @@ class PlaySoundsViewController: UIViewController {
     @IBAction func playEchoAudio(sender: UIButton) {
         // Stop and reset the audio player and audio engine
         stopPlayerAndEngine()
+        audioPlayer.currentTime = 0;
+        audioPlayer.play()
         
         // Code sample from here: http://sandmemory.blogspot.com/2014/12/how-would-you-add-reverbecho-to-audio.html
-        let delay:NSTimeInterval = 0.1  //100ms
+        let delay:NSTimeInterval = 0.3  //100ms
         var playtime:NSTimeInterval
         playtime = audioPlayer2.deviceCurrentTime + delay
-        audioPlayer2.stop()
         audioPlayer2.currentTime = 0
         audioPlayer2.volume = 0.8;
         audioPlayer2.playAtTime(playtime)
@@ -76,6 +77,7 @@ class PlaySoundsViewController: UIViewController {
     func stopPlayerAndEngine()
     {
         audioPlayer.stop()
+        audioPlayer2.stop()
         audioEngine.stop()
         audioEngine.reset()
     }
@@ -92,12 +94,13 @@ class PlaySoundsViewController: UIViewController {
         stopPlayerAndEngine()
         // Creating an audio player node
         var audioPlayerNode = AVAudioPlayerNode()
-        // Attaching the node to the audio engine
-        audioEngine.attachNode(audioPlayerNode)
         
         // Change the pitch and attaching to audio engine
         var changePitchEffect = AVAudioUnitTimePitch()
         changePitchEffect.pitch = pitch
+        
+        // Attaching the node to the audio engine
+        audioEngine.attachNode(audioPlayerNode)
         audioEngine.attachNode(changePitchEffect)
         
         // Connecting the audio player node and the pitch speed
@@ -137,7 +140,6 @@ class PlaySoundsViewController: UIViewController {
         audioEngine.startAndReturnError(nil)
         
         audioPlayerNode.play()
-
     }
     
 }
