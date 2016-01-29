@@ -20,12 +20,12 @@ class PlaySoundsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
-        audioPlayer2 = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
+        audioPlayer = try! AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl)
+        audioPlayer2 = try! AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl)
         // Enabling rate give us the posibility to change rate in the next functions
         audioPlayer.enableRate = true
         audioEngine = AVAudioEngine()
-        audioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
+        audioFile = try? AVAudioFile(forReading: receivedAudio.filePathUrl)
     }
     
     override func didReceiveMemoryWarning() {
@@ -93,10 +93,10 @@ class PlaySoundsViewController: UIViewController {
         // Stop and reset the audio player and audio engine
         stopPlayerAndEngine()
         // Creating an audio player node
-        var audioPlayerNode = AVAudioPlayerNode()
+        let audioPlayerNode = AVAudioPlayerNode()
         
         // Change the pitch and attaching to audio engine
-        var changePitchEffect = AVAudioUnitTimePitch()
+        let changePitchEffect = AVAudioUnitTimePitch()
         changePitchEffect.pitch = pitch
         
         // Attaching the node to the audio engine
@@ -109,7 +109,10 @@ class PlaySoundsViewController: UIViewController {
         
         // Playing the file
         audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil)
-        audioEngine.startAndReturnError(nil)
+        do {
+            try audioEngine.start()
+        } catch _ {
+        }
         
         audioPlayerNode.play()
     }
@@ -118,7 +121,7 @@ class PlaySoundsViewController: UIViewController {
         // Stop and reset the audio player and audio engine
         stopPlayerAndEngine()
         // Creating an audio player node
-        var audioPlayerNode = AVAudioPlayerNode()
+        let audioPlayerNode = AVAudioPlayerNode()
         
         // Create the effect
         // Sample code from here: http://objective-audio.jp/2014/09/avaudioengine.html
@@ -137,7 +140,10 @@ class PlaySoundsViewController: UIViewController {
         
         // Playing the file
         audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil)
-        audioEngine.startAndReturnError(nil)
+        do {
+            try audioEngine.start()
+        } catch _ {
+        }
         
         audioPlayerNode.play()
     }
